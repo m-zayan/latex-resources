@@ -4,7 +4,40 @@ import re
 
 import os
 import shutil
-   
+
+
+class Static:
+
+    namespace = set()
+
+
+def def_namespace(path: str, newpath: str) -> bool:
+
+    if path in Static.namespace:
+        return False
+
+    Static.namespace.add(newpath)
+
+    return True
+
+
+def def_depth(path: str, iformat: str = '.') -> int:
+
+    nlevels = path.count(iformat)
+
+    return nlevels - 1
+
+
+def def_rdepth(dest: str, path: str, iformat: str = '/') -> int:
+
+    nlevels = path.count(iformat)
+
+    if path.startswith(dest):
+
+        nlevels = path[len(dest):].count(iformat)
+
+    return nlevels - 1
+
 
 def path_join(dirpath: str, fname: str, fext: str):
 
@@ -21,17 +54,17 @@ def realpath(path: str):
 
 
 def sstrip(sstr: str, substr: str):
-    
+
     l, r = 0, len(sstr)
     ls, rs = 1, 1
 
-    while r >= l and ls and rs:
+    while (r >= l) and (ls or rs):
 
-        ls = int(sstr.startswith(substr))
-        rs = int(sstr.endswith(substr))
-            
-        l += ls    
-        r -= rs
+        ls = int(sstr.startswith(substr, l, r))
+        rs = int(sstr.endswith(substr, l, r))
+
+        l += ls * len(substr)
+        r -= rs * len(substr)
 
     return sstr[l:r]
 
@@ -124,11 +157,16 @@ def fcopy_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat:
 
     for path, newpath in pgen:
 
+        if not def_rdepth(dest, path):
+            continue
+
         newpath = rclip(newpath, iformat, clipat)
         newpath = os.path.join(dest, newpath)
 
         if path == newpath:
+            continue
 
+        if not def_namespace(path, newpath):
             continue
 
         shutil.copyfile(path, newpath)
@@ -149,8 +187,14 @@ def fmove_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat:
 
     for path, newpath in pgen:
 
+        if not def_rdepth(dest, path):
+            continue
+
         newpath = rclip(newpath, iformat, clipat)
         newpath = os.path.join(dest, newpath)
+
+        if not def_namespace(path, newpath):
+            continue
 
         os.rename(path, newpath)
 
@@ -160,9 +204,9 @@ def fmove_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat:
 def args_info(func):
 
     count = func.__code__.co_argcount
-    name = fmove_ext.__code__.co_varnames
+    name = func.__code__.co_varnames
     defaults = func.__defaults__
-    types = fcopy_ext.__annotations__
+    types = func.__annotations__
 
     return count, name, defaults, types
 

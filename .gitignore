@@ -1,0 +1,7 @@
+**/__pycache__
+**/.idea
+
+**/*.log
+**/*.synctex.gz
+**/*.out
+**/*.aux
