@@ -1,3 +1,93 @@
+% ============================================   packages   ============================================
+
 \usepackage{tikz.shape.parallelepiped}
 
-%\tikzset{}
+% ============================================ commands.get ============================================
+
+\newcommand{\getbasecolor}[1]{\pgfkeysvalueof{/d3d/#1/fill}}
+
+\newcommand{\getoffset}[2]{\pgfkeysvalueof{/d3d/#1/r#2}}
+
+\newcommand{\getwidth}[1]{\pgfkeysvalueof{/d3d/#1/width}}
+
+\newcommand{\getheight}[1]{\pgfkeysvalueof{/d3d/#1/height}}
+
+\newcommand{\getcolor}[2]{\pgfkeysvalueof{/d3d/#1/c#2}}
+
+% ============================================ commands.set ============================================
+
+\newcommand{\setbasecolor}[2]{
+	\pgfkeyssetvalue{/d3d/#1/fill}{#2}
+}
+
+\newcommand{\setoffset}[3]{
+	\pgfkeyssetvalue{/d3d/#1/r#2}{#3}
+}
+
+\newcommand{\setwidth}[2]{
+	\pgfkeyssetvalue{/d3d/#1/width}{#2}
+}
+
+\newcommand{\setheight}[2]{
+	\pgfkeyssetvalue{/d3d/#1/height}{#2}
+}
+
+\newcommand{\setcolor}[3]{
+	\pgfkeyssetvalue{/d3d/#1/c#2}{#3}
+}
+
+% ============================================    pgfkeys   ============================================
+
+% d3d-keys <--> multipurpose
+\pgfkeys {
+	/d3d/.is family, 
+	/d3d,
+	% --------------------------------------------------------------------------------------------------
+}
+
+% rect3d-keys
+\pgfkeys {
+	/d3d/rect3d/.is family, 
+	/d3d/rect3d,
+	% --------------------------------------------------------------------------------------------------
+    fill/.initial = white, % fill-color
+	% --------------------------------------------------------------------------------------------------
+    rx/.initial = 1.0cm, % offset x
+    ry/.initial = 1.0cm, % offset y
+ 	% --------------------------------------------------------------------------------------------------
+	width/.initial = 1.0cm,
+	height/.initial = 1.0cm,
+	% --------------------------------------------------------------------------------------------------
+	c0/.initial = gray, % color - key
+	c1/.initial = gray, % color - key
+	% --------------------------------------------------------------------------------------------------
+	c2/.initial = white, % color - key
+	% --------------------------------------------------------------------------------------------------
+}
+
+% ============================================     styles    ============================================
+
+\tikzset {
+	% rect3d
+	rect3d/.style = { 
+		parallelepiped, 
+		% -------------------------------------------------------------------------------------------
+		fill = \getbasecolor{rect3d},
+		% -------------------------------------------------------------------------------------------
+		draw,
+		% -------------------------------------------------------------------------------------------
+    	minimum width = \getwidth{rect3d},
+    	minimum height = \getheight{rect3d},
+		% -------------------------------------------------------------------------------------------    	
+    	parallelepiped offset x = \getoffset{rect3d}{x},
+    	parallelepiped offset y = \getoffset{rect3d}{y},
+		% -------------------------------------------------------------------------------------------    	
+    	path picture = {
+      		\draw[top color = \getcolor{rect3d}{0}, bottom color = \getcolor{rect3d}{1}]
+        	(path picture bounding box.south west) rectangle 
+        	(path picture bounding box.north east);
+        },
+        % -------------------------------------------------------------------------------------------    	
+    	text = \getcolor{rect3d}{2},
+    },
+}
