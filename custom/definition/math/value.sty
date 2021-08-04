@@ -1,0 +1,15 @@
+% ======================================================================================================
+
+\usepackage{pgf}
+
+% ============================================== command.pfg ==============================================
+
+\newcommand{\sign}[1]{\pgfmathparse{sign(#1)}\pgfmathresult}
+\newcommand{\abs}[1]{\pgfmathparse{abs(#1)}\pgfmathresult}
+
+\newcommand{\unit}[2]{\pgfmathparse{ (abs(#1) / abs(#2)) * (sign(#1) * sign(#2)) }\pgfmathresult}
+
+\newcommand{\tocm}[1]{\unit{#1}{1cm}}
+\newcommand{\topt}[1]{\unit{#1}{1pt}}
+
+% ======================================================================================================

@@ -1,12 +1,16 @@
 % ============================================   packages   ============================================
 
-\usepackage{tikz.shape.parallelepiped}
+\usepackage{custom.tikz.shape.parallelepiped}
 
 % ============================================ commands.get ============================================
 
 \newcommand{\getbasecolor}[1]{\pgfkeysvalueof{/d3d/#1/fill}}
 
 \newcommand{\getoffset}[2]{\pgfkeysvalueof{/d3d/#1/r#2}}
+
+\newcommand{\getscale}[2]{\pgfkeysvalueof{/d3d/#1/#2s}}
+
+\newcommand{\getdir}[2]{\pgfkeysvalueof{/d3d/#1/#2d}}
 
 \newcommand{\getwidth}[1]{\pgfkeysvalueof{/d3d/#1/width}}
 
@@ -22,6 +26,18 @@
 
 \newcommand{\setoffset}[3]{
 	\pgfkeyssetvalue{/d3d/#1/r#2}{#3}
+}
+
+\newcommand{\setscale}[3]{
+	\pgfkeyssetvalue{/d3d/#1/#2s}{#3}
+}
+
+\newcommand{\mirror}[2]{
+	\pgfkeyssetvalue{/d3d/#1/#2d}{-1pt}
+}
+
+\newcommand{\rmirror}[2]{
+	\pgfkeyssetvalue{/d3d/#1/#2d}{1pt}
 }
 
 \newcommand{\setwidth}[2]{
@@ -55,6 +71,12 @@
     rx/.initial = 1.0cm, % offset x
     ry/.initial = 1.0cm, % offset y
  	% --------------------------------------------------------------------------------------------------
+ 	xs/.initial = 1pt, % scale x
+ 	ys/.initial = 1pt, % scale y
+ 	% --------------------------------------------------------------------------------------------------
+  	xd/.initial = 1pt, % dir x
+ 	yd/.initial = 1pt, % dir y
+ 	% --------------------------------------------------------------------------------------------------
 	width/.initial = 1.0cm,
 	height/.initial = 1.0cm,
 	% --------------------------------------------------------------------------------------------------
@@ -81,6 +103,9 @@
 		% -------------------------------------------------------------------------------------------    	
     	parallelepiped offset x = \getoffset{rect3d}{x},
     	parallelepiped offset y = \getoffset{rect3d}{y},
+    	% -------------------------------------------------------------------------------------------    	
+		xscale = \getscale{rect3d}{x} * \getdir{rect3d}{x},
+		yscale = \getscale{rect3d}{y} * \getdir{rect3d}{y},
 		% -------------------------------------------------------------------------------------------    	
     	path picture = {
       		\draw[top color = \getcolor{rect3d}{0}, bottom color = \getcolor{rect3d}{1}]

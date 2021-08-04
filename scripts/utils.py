@@ -144,7 +144,7 @@ def is_valid_path(src: str, dest: str):
     return 1
 
 
-def fcopy_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat: str = '.', clipat: int = 4):
+def fcopy_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat: str = '.', clipat: int = 5):
     
     src = realpath(src)
     dest = realpath(dest)
@@ -174,7 +174,7 @@ def fcopy_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat:
         print(newpath)
 
 
-def fmove_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat: str = '.', clipat: int = 4):
+def fmove_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat: str = '.', clipat: int = 5):
 
     src = realpath(src)
     dest = realpath(dest)

@@ -2,20 +2,33 @@
 
 \usepackage{preamble}
 
+\usepackage{custom.definition.math.value}
+\usepackage{custom.definition.math.symbol}
+
+\usepackage{custom.tikz.style.d3d}
+
 \title{Latex Resources Test}
 
 \begin{document}
 \maketitle
 
 \section*{}
-\getwidth{rect3d}
+\getoffset{rect3d}{x}
 
 \subsection*{}
 
 	\begin{tikzpicture}
-		\setwidth{rect3d}{3cm}
+	
+		% virt-mirror [0]
+		
+% 		\node[rect3d, rotate=90](r3d){\rotatebox{270}{Rect3D}};
+		
+		% mirror [1]
+		
+		\mirror{rect3d}{x}
+%		\rmirror{rect3d}{x}
  		\node[rect3d](r3d){Rect3D};
-
+ 		
 	\end{tikzpicture}
 
 \end{document}
