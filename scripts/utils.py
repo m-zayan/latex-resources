@@ -21,6 +21,27 @@ def def_namespace(path: str, newpath: str) -> bool:
     return True
 
 
+def is_valid_path(*args, **kwargs) -> bool:
+
+    for path in args:
+
+        if not os.path.exists(path):
+
+            print(f'path: {path}, doesn\'t exist')
+
+            return False
+
+    for key, path in kwargs.items():
+
+        if not os.path.exists(path):
+
+            print(f'{key}-path: {path}, doesn\'t exist')
+
+            return False
+
+    return True
+
+
 def def_depth(path: str, iformat: str = '.') -> int:
 
     nlevels = path.count(iformat)
@@ -127,22 +148,7 @@ def ffind_ext(src: str, ext: str, src_include: bool = False, iformat: str = '.')
         yield path, newpath
 
 
-def is_valid_path(src: str, dest: str):
-
-    if not os.path.exists(src):
-
-        print(f'dest: {src}, doesn\'t exist')
-
-        return
-
-    if not os.path.exists(dest):
-
-        print(f'src: {src}, doesn\'t exist')
-
-        return
-
-    return 1
-
+#  [...........] =======================================================================================================
 
 def fcopy_ext(src: str, dest: str, ext: str, src_include: bool = False, iformat: str = '.', clipat: int = 5):
     
@@ -235,6 +241,85 @@ def unsafe_call(func):
 
     func(*args)
 
+#  [LatexSyntax] =======================================================================================================
+
+
+def incb(sstr: str):
+    """ in_curly_braces """
+    return '{' + sstr + '}'
+
+
+def parse_kwargs(**kwargs):
+
+    size = len(kwargs)
+
+    line = ''
+
+    for i, (key, value) in enumerate(kwargs.items()):
+
+        line += f'{key}={value}'
+
+        if i != size - 1:
+            line += ', '
+
+    return line
+
+
+def usepackage(packname: str, **options):
+
+    return f'\\usepackage[{parse_kwargs(**options)}]{incb(packname)}\n'
+
+#  [...........] =======================================================================================================
+
+
+def readlines(path: str):
+
+    if not is_valid_path(path):
+
+        return []
+
+    with open(path, 'r') as buffer:
+
+        return buffer.readlines()
+
+
+def package(name: str, src: str, childof: str = ''):
+
+    src = realpath(src)
+
+    if not is_valid_path(src):
+        return
+
+    name = os.path.splitext(name)[0]
+
+    pack_path = os.path.join(src, name) + '.sty'
+
+    filenames = os.listdir(src)
+
+    lines = readlines(pack_path)
+
+    with open(pack_path, 'a') as pack:
+
+        for i in range(len(filenames)):
+
+            fname, fext = os.path.splitext(filenames[i])
+
+            if fname == name:
+                continue
+
+            if childof not in fname:
+                continue
+
+            if fext == '.sty':
+
+                code = usepackage(fname)
+
+                if code not in lines:
+
+                    pack.write(code)
+
+#  [...........] =======================================================================================================
+
 
 def run_cmd(cmd):
 
@@ -248,6 +333,16 @@ def run_cmd(cmd):
 
         unsafe_call(fcopy_ext)
 
+    elif cmd == 'pk':
+
+        unsafe_call(package)
+
     else:
 
         print('Command not found')
+
+
+#  [...........] =======================================================================================================
+
+# package('custom.sty', '../test', 'custom')
+# package('definitions.sty', '../test', 'custom.definition')

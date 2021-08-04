@@ -7,3 +7,5 @@
 **/*.aux
 **/*.bbl
 **/*.blg
+
+test/custom*
